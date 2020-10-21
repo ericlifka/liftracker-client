@@ -1,0 +1,19 @@
+{
+  "name": "liftracker-client",
+  "version": "1.0.0",
+  "description": "React UI for liftracker.com",
+  "main": "index.html",
+  "author": "Eric Lifka <eric.lifka@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "parcel index.html",
+    "deploy": "parcel build index.html"
+  },
+  "dependencies": {
+    "parcel": "^1.12.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  }
+}
