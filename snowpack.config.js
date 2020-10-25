@@ -20,8 +20,8 @@ module.exports = {
   buildOptions: {
     /* ... */
   },
-  proxy: {
-    /* ... */
+  "proxy": {
+    "/api": "http://localhost:3000/api",
   },
   alias: {
     /* ... */
