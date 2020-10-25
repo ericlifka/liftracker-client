@@ -1,5 +1,5 @@
 
-export const logger = store => next => action => {
+export const logger = (store: { getState: () => any }) => (next: (arg0: any) => any) => (action: { type: any }) => {
   console.group(action.type)
   console.info('dispatching', action)
   let result = next(action)
