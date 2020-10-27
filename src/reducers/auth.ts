@@ -2,16 +2,26 @@ import type { AuthAction } from "../actions/auth"
 import type { AppModel } from "./index"
 import { AuthActions } from "../actions/auth"
 
+export type User = {
+  id: string
+  username: string
+}
+
 export type Auth = {
   token: null | string
+  user: null | User
+
   loginPending: boolean
   loginError: null | string
+
   registerPending: boolean,
   registerError: null | string
 }
 
 export const initialState = (): Auth => ({
   token: null,
+  user: null,
+
   loginPending: false,
   loginError: null,
 
@@ -46,7 +56,8 @@ export function reducer(state: Auth = initialState(), action: AuthAction): Auth 
     case AuthActions.LOGIN_SUCCESS:
       return {
         ...initialState(),
-        token: action.token
+        token: action.token,
+        user: action.user
       }
 
     case AuthActions.REGISTER_REQUEST:
@@ -62,7 +73,10 @@ export function reducer(state: Auth = initialState(), action: AuthAction): Auth 
       }
 
     case AuthActions.REGISTER_SUCCESS:
-      return { ...initialState() }
+      return {
+        ...initialState(),
+        user: action.user
+      }
 
     default:
       return state
