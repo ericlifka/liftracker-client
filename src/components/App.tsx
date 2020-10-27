@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, {FunctionComponent, ReactElement} from 'react'
 import { useSelector } from "react-redux"
 import {
-  useHistory, useLocation,
+  useHistory,
   BrowserRouter, Link, Route, Switch, Redirect
 } from 'react-router-dom'
 import { useDispatch } from "react-redux"
-import {login, logout} from "../actions/auth"
+import {login, logout, register} from "../actions/auth"
 
 import './App.css'
 import type {AppDispatch} from "../reducers"
-import {getAuthLoginPending, getAuthToken} from "../reducers/auth"
+import {getAuthLoginPending, getAuthRegisterPending, getAuthToken} from "../reducers/auth"
 
 
 export const App = () =>
@@ -40,6 +40,9 @@ export const App = () =>
         <Route path="/login">
           <LoginPage />
         </Route>
+        <Route path="/register">
+          <RegisterPage />
+        </Route>
         <Route path="/">
           <HomePage />
         </Route>
@@ -52,19 +55,24 @@ function AuthButton() {
   let loggedIn = !!useSelector(getAuthToken)
 
   return loggedIn
-    ? <p>
+    ? <div>
         <div>Welcome!</div>
         <button onClick={() => dispatch(logout())}>
           Sign out
         </button>
-      </p>
-    : <p>You are not logged in.</p>
+      </div>
+    : <div>
+        <div>You are not logged in.</div>
+        <Link to="/login">login</Link>
+      </div>
 }
 
-function PrivateRoute({ children, ...rest }) {
+type RouteParams = { children: ReactElement[] | ReactElement, [s: string]: any }
+function PrivateRoute(props: RouteParams) {
+  let { children, ...rest } = props
   let loggedIn = !!useSelector(getAuthToken)
 
-  return <Route {...rest} render={
+  return <Route { ...rest } render={
     ({ location }) =>
         loggedIn
           ? children
@@ -72,39 +80,42 @@ function PrivateRoute({ children, ...rest }) {
     } />
 }
 
-function HomePage() {
+const HomePage: FunctionComponent = () => {
   return <h3>Home</h3>
 }
 
-function PublicPage() {
+const PublicPage: FunctionComponent = () => {
   return <h3>Public</h3>
 }
 
-function ProtectedPage() {
+const ProtectedPage: FunctionComponent = () => {
   return <h3>Protected</h3>
 }
 
-interface LocationState { from: { pathname: string } }
-function LoginPage() {
+const LoginPage: FunctionComponent = () => {
   let history = useHistory()
-  let location = useLocation<LocationState>()
   let dispatch = useDispatch<AppDispatch>()
   let loggingIn = useSelector(getAuthLoginPending)
-
-  let from = location.state.from || { pathname: "/" }
-
-  let click = () => {
-    dispatch(login()).then(() => {
-      history.replace(from)
-    })
-  }
 
   return (
     loggingIn
       ? <div>Logging In...</div>
       : <div>
-          <p>You must log in to view the page at {from.pathname}</p>
-          <button onClick={click}>Log in</button>
+          <button onClick={() => dispatch(login(history))}>login</button>
+          <Link to="/register">register</Link>
         </div>
   )
+}
+
+const RegisterPage: FunctionComponent = () => {
+  let history = useHistory()
+  let dispatch = useDispatch<AppDispatch>()
+  let registering = useSelector(getAuthRegisterPending)
+
+  return registering
+    ? <div>Registering...</div>
+    : <div>
+        <button onClick={() => dispatch(register(history))}>Register</button>
+        <Link to="/login">Cancel</Link>
+      </div>
 }

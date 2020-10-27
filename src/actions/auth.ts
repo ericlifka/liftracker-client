@@ -1,4 +1,5 @@
-import type { AppAction } from "../reducers"
+import type { AppThunk } from "../reducers"
+import type { History } from 'history';
 
 export enum AuthActions {
   LOGOUT = 'LOGOUT',
@@ -25,8 +26,8 @@ export const loginSuccess = (token: string): LoginSuccess => ({ type: AuthAction
 export type RegisterRequest = { type: AuthActions.REGISTER_REQUEST }
 export const registerRequest = (): RegisterRequest => ({ type: AuthActions.REGISTER_REQUEST })
 
-export type RegisterFailure = { type: AuthActions.REGISTER_FAILURE }
-export const registerFailure = (): RegisterFailure => ({ type: AuthActions.REGISTER_FAILURE })
+export type RegisterFailure = { type: AuthActions.REGISTER_FAILURE, error: string }
+export const registerFailure = (error: string): RegisterFailure => ({ type: AuthActions.REGISTER_FAILURE, error })
 
 export type RegisterSuccess = { type: AuthActions.REGISTER_SUCCESS }
 export const registerSuccess = (): RegisterSuccess => ({ type: AuthActions.REGISTER_SUCCESS })
@@ -40,11 +41,18 @@ export type AuthAction
   | RegisterFailure
   | RegisterSuccess
 
-export const login = (): AppAction<Promise<void>> => (dispatch, getState) =>
-  new Promise<void>((resolve, reject) => {
-    dispatch(loginRequest())
-    setTimeout(() => {
-      dispatch(loginSuccess('asdf'))
-      resolve()
-    }, 1000)
-  })
+export const login = (history: History): AppThunk => (dispatch, getState) => {
+  dispatch(loginRequest())
+  setTimeout(() => {
+    dispatch(loginSuccess('asdf'))
+    history.push("/")
+  }, 1000)
+}
+
+export const register = (history: History): AppThunk => (dispatch, getState) => {
+  dispatch(registerRequest())
+  setTimeout(() => {
+    dispatch(registerSuccess())
+    history.push('/login')
+  }, 1000)
+}

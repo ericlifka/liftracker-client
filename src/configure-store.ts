@@ -1,9 +1,9 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit"
 import { logger } from "./middleware/logger"
 import { reducer } from "./reducers"
-import type { Model } from "./reducers";
+import type { AppModel } from "./reducers";
 
-export function configureAppStore(preloadedState?: Model) {
+export function configureAppStore(preloadedState?: AppModel) {
   const store = configureStore({
     reducer,
     middleware: [ logger, ...getDefaultMiddleware() ],

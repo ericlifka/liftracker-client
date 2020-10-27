@@ -6,18 +6,25 @@ export type Auth = {
   token: null | string
   loginPending: boolean
   loginError: null | string
+  registerPending: boolean,
+  registerError: null | string
 }
 
 export const initialState = (): Auth => ({
   token: null,
   loginPending: false,
-  loginError: null
+  loginError: null,
+
+  registerPending: false,
+  registerError: null
 })
 
 export const getAuth = (state: AppModel) => state.auth
 export const getAuthToken = (state: AppModel) => getAuth(state).token
 export const getAuthLoginPending = (state: AppModel) => getAuth(state).loginPending
 export const getAuthLoginError = (state: AppModel) => getAuth(state).loginError
+export const getAuthRegisterPending = (state: AppModel) => getAuth(state).registerPending
+export const getAuthRegisterError = (state: AppModel) => getAuth(state).registerError
 
 export function reducer(state: Auth = initialState(), action: AuthAction): Auth {
   switch (action.type) {
@@ -43,13 +50,19 @@ export function reducer(state: Auth = initialState(), action: AuthAction): Auth 
       }
 
     case AuthActions.REGISTER_REQUEST:
-      return state
+      return {
+        ...initialState(),
+        registerPending: true
+      }
 
     case AuthActions.REGISTER_FAILURE:
-      return state
+      return {
+        ...initialState(),
+        registerError: action.error
+      }
 
     case AuthActions.REGISTER_SUCCESS:
-      return state
+      return { ...initialState() }
 
     default:
       return state
