@@ -5,7 +5,6 @@ import {RegisterRoute} from "./routes/register"
 import {HomeRoute} from "./routes/home"
 import {LiftsRoute} from "./routes/lifts"
 import {PrivateRoute} from "./routes/private-route"
-import './App.css'
 
 
 export const App = () =>
