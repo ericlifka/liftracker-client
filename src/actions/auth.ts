@@ -42,15 +42,16 @@ export type AuthAction
   | RegisterFailure
   | RegisterSuccess
 
+const authRequestPayload = (username:string, password:string) => ({
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ username, password })
+})
+
 export const login = (username: string, password: string, history: History): AppThunk =>
   async (dispatch, getState) => {
     dispatch(loginRequest())
-    let response = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    })
-
+    let response = await fetch('/api/login', authRequestPayload(username, password))
     let json = await response.json()
 
     if (!response.ok) {
@@ -58,18 +59,14 @@ export const login = (username: string, password: string, history: History): App
     }
 
     dispatch(loginSuccess(json.token, json.user))
-    history.push('/protected')
+    localStorage.setItem('token', json.token)
+    history.push('/')
   }
 
 export const register = (username: string, password: string, history: History): AppThunk =>
   async (dispatch, getState) => {
     dispatch(registerRequest())
-    let response = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    })
-
+    let response = await fetch('/api/register', authRequestPayload(username, password))
     let json = await response.json()
 
     if (!response.ok) {
@@ -78,4 +75,21 @@ export const register = (username: string, password: string, history: History): 
 
     dispatch(registerSuccess(json.user))
     history.push("/login")
+  }
+
+export const restoreAuth = (token: string, history: History): AppThunk =>
+  async (dispatch, getState) => {
+    let response = await fetch('/api/user', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    let json = await response.json()
+
+    if (!response.ok) {
+      history.push("/login")
+    }
+    else {
+      dispatch(loginSuccess(token, json.user))
+    }
   }

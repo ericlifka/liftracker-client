@@ -1,129 +1,29 @@
-import React, {FunctionComponent, ReactElement, useState} from 'react'
-import { useSelector } from "react-redux"
-import {
-  useHistory,
-  BrowserRouter, Link, Route, Switch, Redirect
-} from 'react-router-dom'
-import { useDispatch } from "react-redux"
-import {login, logout, register} from "../actions/auth"
-
+import React from 'react'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import {LoginRoute} from "./routes/login"
+import {RegisterRoute} from "./routes/register"
+import {HomeRoute} from "./routes/home"
+import {LiftsRoute} from "./routes/lifts"
+import {PrivateRoute} from "./routes/private-route"
 import './App.css'
-import type {AppDispatch} from "../reducers"
-import {getAuthLoginPending, getAuthRegisterPending, getAuthToken} from "../reducers/auth"
 
 
 export const App = () =>
   <BrowserRouter>
-    <div>
-      <AuthButton />
+    <Switch>
+      <PrivateRoute path="/lifts">
+        <LiftsRoute />
+      </PrivateRoute>
 
-      <ul>
-        <li>
-          <Link to="/">Home Page</Link>
-        </li>
-        <li>
-          <Link to="/public">Public Page</Link>
-        </li>
-        <li>
-          <Link to="/protected">Protected Page</Link>
-        </li>
-      </ul>
+      <Route path="/login">
+        <LoginRoute />
+      </Route>
+      <Route path="/register">
+        <RegisterRoute />
+      </Route>
 
-      <Switch>
-        <PrivateRoute path="/protected">
-          <ProtectedPage />
-        </PrivateRoute>
-
-        <Route path="/public">
-          <PublicPage />
-        </Route>
-        <Route path="/login">
-          <LoginPage />
-        </Route>
-        <Route path="/register">
-          <RegisterPage />
-        </Route>
-        <Route path="/">
-          <HomePage />
-        </Route>
-      </Switch>
-    </div>
+      <Route path="/">
+        <HomeRoute />
+      </Route>
+    </Switch>
   </BrowserRouter>
-
-function AuthButton() {
-  let dispatch = useDispatch()
-  let loggedIn = !!useSelector(getAuthToken)
-
-  return loggedIn
-    ? <div>
-        <div>Welcome!</div>
-        <button onClick={() => dispatch(logout())}>
-          Sign out
-        </button>
-      </div>
-    : <div>
-        <div>You are not logged in.</div>
-        <Link to="/login">login</Link>
-      </div>
-}
-
-type RouteParams = { children: ReactElement[] | ReactElement, [s: string]: any }
-function PrivateRoute(props: RouteParams) {
-  let { children, ...rest } = props
-  let loggedIn = !!useSelector(getAuthToken)
-
-  return <Route { ...rest } render={
-    ({ location }) =>
-        loggedIn
-          ? children
-          : <Redirect to={{ pathname: "/login", state: { from: location }}} />
-    } />
-}
-
-const HomePage: FunctionComponent = () => {
-  return <h3>Home</h3>
-}
-
-const PublicPage: FunctionComponent = () => {
-  return <h3>Public</h3>
-}
-
-const ProtectedPage: FunctionComponent = () => {
-  return <h3>Protected</h3>
-}
-
-const LoginPage: FunctionComponent = () => {
-  let history = useHistory()
-  let dispatch = useDispatch<AppDispatch>()
-  let loggingIn = useSelector(getAuthLoginPending)
-  let [ username, setUsername ] = useState("")
-  let [ password, setPassword ] = useState("")
-
-  return (
-    loggingIn
-      ? <div>Logging In...</div>
-      : <div>
-          <div><input value={username} onChange={e => setUsername(e.target.value)} placeholder="username" /></div>
-          <div><input value={password} onChange={e => setPassword(e.target.value)} placeholder="username" /></div>
-          <button onClick={() => dispatch(login(username, password, history))}>login</button>
-          <Link to="/register">register</Link>
-        </div>
-  )
-}
-
-const RegisterPage: FunctionComponent = () => {
-  let history = useHistory()
-  let dispatch = useDispatch<AppDispatch>()
-  let registering = useSelector(getAuthRegisterPending)
-  let [ username, setUsername ] = useState("")
-  let [ password, setPassword ] = useState("")
-
-  return registering
-    ? <div>Registering...</div>
-    : <div>
-        <div><input value={username} onChange={e => setUsername(e.target.value)} placeholder="username" /></div>
-        <div><input value={password} onChange={e => setPassword(e.target.value)} placeholder="username" /></div>
-        <button onClick={() => dispatch(register(username, password, history))}>Register</button>
-        <Link to="/login">Cancel</Link>
-      </div>
-}

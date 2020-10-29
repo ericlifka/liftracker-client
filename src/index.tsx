@@ -1,10 +1,10 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from "react-redux"
-
 import { App } from './components/App'
 import { configureAppStore }  from "./configure-store"
 import './index.css'
+
 
 const store = configureAppStore()
 

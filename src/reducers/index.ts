@@ -3,6 +3,7 @@ import type { Action } from "redux"
 import type {ThunkAction, ThunkDispatch} from "redux-thunk";
 import { reducer as auth } from "./auth"
 
+
 export const reducer = combineReducers({
   auth
 })

@@ -2,6 +2,7 @@ import type { AuthAction } from "../actions/auth"
 import type { AppModel } from "./index"
 import { AuthActions } from "../actions/auth"
 
+
 export type User = {
   id: string
   username: string
