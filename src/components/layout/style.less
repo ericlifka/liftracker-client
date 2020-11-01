@@ -1,0 +1,70 @@
+@import '../vars';
+
+.page-layout {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    // top affordance for mobile icons
+    display: block;
+    content: " ";
+    flex-grow: 0;
+    height: 20px;
+    z-index: 3;
+    background-color: @theme-variant-primary;
+  }
+}
+
+.page-content {
+  z-index: 1;
+  flex-grow: 1;
+  padding: 16px 12px;
+  color: @theme-on-background;
+  background-color: @theme-background;
+  overflow-x: scroll;
+  display: flex;
+  flex-direction: column;
+
+  &.centered {
+    justify-content: center;
+  }
+}
+
+.page-nav-bar {
+  z-index: 2;
+  flex-grow: 0;
+  padding: 16px 4px;
+  font-size: 24px;
+  color: @theme-on-primary;
+  background-color: @theme-primary;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  display: flex;
+
+  .navigation {
+    border: none;
+    margin: 0;
+    padding: 2px 12px 0 12px;
+    background: none;
+    color: inherit;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+
+    &.right {
+      justify-self: flex-end;
+    }
+  }
+
+  .title {
+    flex-grow: 1;
+    padding: 0 0 0 20px;
+  }
+  &.context-form {
+    .title {
+      padding-top: 66px;
+    }
+  }
+}

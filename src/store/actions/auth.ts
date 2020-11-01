@@ -55,12 +55,13 @@ export const login = (username: string, password: string, history: History): App
     let json = await response.json()
 
     if (!response.ok) {
-      return dispatch(loginFailure(json.error))
+      dispatch(loginFailure(json.error))
     }
-
-    dispatch(loginSuccess(json.token, json.user))
-    localStorage.setItem('token', json.token)
-    history.push('/')
+    else {
+      dispatch(loginSuccess(json.token, json.user))
+      localStorage.setItem('token', json.token)
+      history.push('/')
+    }
   }
 
 export const register = (username: string, password: string, history: History): AppThunk =>
@@ -70,11 +71,12 @@ export const register = (username: string, password: string, history: History): 
     let json = await response.json()
 
     if (!response.ok) {
-      return dispatch(registerFailure(json.error))
+      dispatch(registerFailure(json.error))
     }
-
-    dispatch(registerSuccess(json.user))
-    history.push("/login")
+    else {
+      dispatch(registerSuccess(json.user))
+      history.push("/login")
+    }
   }
 
 export const restoreAuth = (token: string, history: History): AppThunk =>
@@ -84,12 +86,12 @@ export const restoreAuth = (token: string, history: History): AppThunk =>
         'Authorization': `Bearer ${token}`
       }
     })
-    let json = await response.json()
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       history.push("/login")
     }
     else {
+      let json = await response.json()
       dispatch(loginSuccess(token, json.user))
     }
   }

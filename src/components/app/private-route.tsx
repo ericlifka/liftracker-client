@@ -1,7 +1,7 @@
 import React, {ReactElement} from "react";
 import {useSelector} from "react-redux";
 import {Redirect, Route} from "react-router-dom";
-import {getAuthToken} from "../../reducers/auth";
+import {getAuthToken} from "../../store/reducers/auth";
 
 
 type RouteParams = { children: ReactElement[] | ReactElement, [s: string]: any }
