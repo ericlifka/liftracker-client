@@ -3,7 +3,7 @@ import React, {FunctionComponent, useState} from "react"
 import {Link, useHistory} from "react-router-dom"
 import {useDispatch, useSelector} from "react-redux"
 import {getAuthLoginError, getAuthLoginPending} from "../../store/reducers/auth"
-import {login, loginFailure} from "../../store/actions/auth"
+import {login} from "../../store/actions/auth"
 import {Content, NavBar, Page} from "../layout"
 import {LoadingSpinner} from "../loading-spinner"
 import {FormActions, FormButton, FormCard, FormError, FormInput, FormLink} from "../form-card"
@@ -18,12 +18,7 @@ export const LoginRoute: FunctionComponent = () => {
   let [ password, setPassword ] = useState("")
 
   const submitForm = () => {
-    if (!username || !password) {
-      dispatch(loginFailure('All fields required'))
-    }
-    else {
-      dispatch(login(username, password, history))
-    }
+    dispatch(login(username, password, history))
   }
 
   return (

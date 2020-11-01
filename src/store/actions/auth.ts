@@ -50,6 +50,10 @@ const authRequestPayload = (username:string, password:string) => ({
 
 export const login = (username: string, password: string, history: History): AppThunk =>
   async (dispatch, getState) => {
+    if (!username || !password) {
+      return dispatch(loginFailure('All fields required'))
+    }
+
     dispatch(loginRequest())
     let response = await fetch('/api/login', authRequestPayload(username, password))
     let json = await response.json()
@@ -64,8 +68,15 @@ export const login = (username: string, password: string, history: History): App
     }
   }
 
-export const register = (username: string, password: string, history: History): AppThunk =>
+export const register = (username: string, password: string, repeat: string, history: History): AppThunk =>
   async (dispatch, getState) => {
+    if (!username || !password || !repeat) {
+      return dispatch(registerFailure('All fields required'))
+    }
+    else if (password !== repeat) {
+      return dispatch(registerFailure("Passwords don't match"))
+    }
+
     dispatch(registerRequest())
     let response = await fetch('/api/register', authRequestPayload(username, password))
     let json = await response.json()
