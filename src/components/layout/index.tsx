@@ -7,13 +7,16 @@ export const Page: FunctionComponent = (props) =>
 
 export type ContentProps = {
   centered?: boolean
+  type?: 'error'
 }
 export const Content: FunctionComponent<ContentProps> = (props) => {
-  let { centered, children } = props
+  let { centered, type, children } = props
 
   return (
     <div
-      className={`page-content ${centered ? 'centered' : ''}`}
+      className={`page-content 
+                ${centered ? 'centered' : ''}
+                ${type === 'error' ? 'error' : ''}`}
     >
       {children}
     </div>
